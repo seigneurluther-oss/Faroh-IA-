@@ -21,6 +21,7 @@ import {
 } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSendAiChat } from '@workspace/api-client-react';
 import colors from '@/constants/colors';
 
 type Language = 'ht' | 'fr';
@@ -140,6 +141,14 @@ function formatConversationDate(dateString: string, language: Language) {
   });
 }
 
+function getApiMessage(error: unknown, fallback: string) {
+  if (!error || typeof error !== 'object') return fallback;
+  const data = (error as { data?: unknown }).data;
+  if (!data || typeof data !== 'object') return fallback;
+  const message = (data as { message?: unknown }).message;
+  return typeof message === 'string' && message.trim() ? message : fallback;
+}
+
 export default function FarohHome() {
   const insets = useSafeAreaInsets();
   const [language, setLanguage] = useState<Language>('ht');
@@ -151,6 +160,7 @@ export default function FarohHome() {
   const [isSending, setIsSending] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showPhotoActions, setShowPhotoActions] = useState(false);
+  const aiChat = useSendAiChat();
 
   const t = copy[language];
   const activeConversation = useMemo(
@@ -238,14 +248,37 @@ export default function FarohHome() {
       imageUri: image,
     });
 
-    await new Promise((resolve) => setTimeout(resolve, 650));
-    appendMessage({
-      id: makeId(),
-      role: 'assistant',
-      text: image ? t.imageAdded : t.sampleReply,
-      createdAt: new Date().toISOString(),
-    });
-    setIsSending(false);
+    try {
+      const response = await aiChat.mutateAsync({
+        data: {
+          question:
+            text ||
+            (language === 'ht'
+              ? 'Gade egzèsis sa a pou mwen.'
+              : 'Analysez cet exercice pour moi.'),
+          language,
+        },
+      });
+      appendMessage({
+        id: makeId(),
+        role: 'assistant',
+        text: response.message,
+        createdAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      const fallback =
+        language === 'ht'
+          ? 'IA a poko konekte. Backend Faroh IA a pare pou resevwa yon founisè IA pita.'
+          : 'L’IA n’est pas encore connectée. Le backend Faroh IA est prêt pour ajouter un fournisseur plus tard.';
+      appendMessage({
+        id: makeId(),
+        role: 'assistant',
+        text: getApiMessage(error, fallback),
+        createdAt: new Date().toISOString(),
+      });
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const selectPhoto = async (source: 'camera' | 'gallery') => {

@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: ai
+    description: Faroh IA assistant operations
 paths:
   /healthz:
     get:
@@ -24,6 +26,43 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /ai/chat:
+    post:
+      operationId: sendAiChat
+      tags: [ai]
+      summary: Send a question to the Faroh IA assistant
+      description: Sends a student question to the configured AI provider. Returns a clear configuration response while no provider key is available.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiChatRequest"
+      responses:
+        "200":
+          description: Assistant response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiChatResponse"
+        "400":
+          description: Invalid question
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiProblem"
+        "502":
+          description: AI provider unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiProblem"
+        "503":
+          description: AI provider is not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiProblem"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +72,44 @@ components:
           type: string
       required:
         - status
+    AiChatRequest:
+      type: object
+      properties:
+        question:
+          type: string
+          minLength: 1
+          maxLength: 4000
+        language:
+          type: string
+          enum: [ht, fr]
+        imageData:
+          type: string
+          nullable: true
+          description: Optional base64 data URL for a future image-capable provider.
+      required:
+        - question
+        - language
+    AiChatResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        provider:
+          type: string
+        configured:
+          type: boolean
+      required:
+        - message
+        - provider
+        - configured
+    ApiProblem:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
 
