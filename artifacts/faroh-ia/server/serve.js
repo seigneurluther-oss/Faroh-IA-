@@ -12,7 +12,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-
+const { handleAiChat } = require('./ai-chat');
 const STATIC_ROOT = path.resolve(__dirname, '..', 'static-build');
 const TEMPLATE_PATH = path.resolve(__dirname, 'templates', 'landing-page.html');
 const basePath = (process.env.BASE_PATH || '/').replace(/\/+$/, '');
@@ -134,14 +134,7 @@ const server = http.createServer((req, res) => {
     pathname = pathname.slice(basePath.length) || '/';
   }
 
-  if (pathname === '/' || pathname === '/manifest') {
-    const platform = req.headers['expo-platform'];
-    if (platform === 'ios' || platform === 'android') {
-      return serveManifest(platform, res);
-    }
-
-    if (pathname === '/') {
-      return serveLandingPage(req, res, landingPageTemplate, appName);
+  if appName);
     }
   }
 

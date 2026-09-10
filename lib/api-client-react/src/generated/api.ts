@@ -140,7 +140,7 @@ export const getSendAiChatUrl = () => {
 }
 
 /**
- * Sends a student question to the configured AI provider. Returns a clear configuration response while no provider key is available.
+ * Sends a student question to the configured Gemini provider and returns a clear provider error when Gemini is unavailable.
  * @summary Send a question to the Faroh IA assistant
  */
 export const sendAiChat = async (aiChatRequest: AiChatRequest, options?: Parameters<typeof customFetch>[1]): Promise<AiChatResponse> => {

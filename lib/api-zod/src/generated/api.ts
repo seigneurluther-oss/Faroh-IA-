@@ -18,7 +18,7 @@ export const HealthCheckResponse = zod.object({
 
 
 /**
- * Sends a student question to the configured AI provider. Returns a clear configuration response while no provider key is available.
+ * Sends a student question to the configured Gemini provider and returns a clear provider error when Gemini is unavailable.
  * @summary Send a question to the Faroh IA assistant
  */
 export const sendAiChatBodyQuestionMax = 4000;
