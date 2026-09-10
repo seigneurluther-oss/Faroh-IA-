@@ -50,7 +50,7 @@ router.post("/ai/chat", async (req, res) => {
     return;
   }
 
-  const model = process.env.GEMINI_MODEL ?? "gemini-3.6-flash";
+  const model = process.env.GEMINI_MODEL ?? "gemini-3.5-flash-lite";
 
   const systemPrompt =
     language === "fr"
