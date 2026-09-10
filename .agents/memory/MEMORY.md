@@ -1,0 +1,1 @@
+- [Gemini availability](gemini-availability.md) — A valid Gemini key can still return model-specific 503 high-demand or 429 quota errors.
