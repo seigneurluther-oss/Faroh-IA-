@@ -1,0 +1,24 @@
+kind = "mobile"
+previewPath = "/faroh-ia/"
+title = "Faroh IA"
+description = "Yon asistan entèlijans atifisyèl mobil pou elèv, ki eksplike egzèsis etap pa etap an kreyòl ayisyen ak franse, sipòte foto, epi konsève istwa konvèsasyon yo."
+version = "1.0.0"
+id = "artifacts/faroh-ia"
+router = "expo-domain"
+
+[[services]]
+name = "expo"
+ensurePreviewReachable = "/status"
+paths = [ "/faroh-ia/" ]
+localPort = 25887
+
+[services.development]
+run = "pnpm --filter @workspace/faroh-ia run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/faroh-ia", "run", "build" ]
+run = [ "pnpm", "--filter", "@workspace/faroh-ia", "run", "serve" ]
+
+[services.env]
+PORT = "25887"
+BASE_PATH = "/faroh-ia/"
