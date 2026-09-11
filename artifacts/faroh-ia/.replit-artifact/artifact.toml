@@ -8,7 +8,7 @@ router = "expo-domain"
 
 [[services]]
 name = "expo"
-ensurePreviewReachable = "/status"
+ensurePreviewReachable = "/faroh-ia/"
 paths = [ "/faroh-ia/" ]
 localPort = 25887
 
