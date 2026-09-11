@@ -1,1 +1,2 @@
 - [Gemini availability](gemini-availability.md) — A valid Gemini key can still return model-specific 503 high-demand or 429 quota errors.
+- [Expo production ports](expo-production-ports.md) — Keep Metro's build port separate from the mockup server; the published Expo service must bind its artifact port.
